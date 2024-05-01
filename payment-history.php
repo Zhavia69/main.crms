@@ -26,7 +26,7 @@ include_once("includes/classes/class.DB.php");
                     <th>Date</th>
                     <th>Amount (KES)</th>
                     <th>Payment Method</th>
-                    <th>Action</th>
+                    <th>Action</th> <!-- New column for the button -->
                </tr>
             </thead>
             <tbody>
@@ -57,7 +57,17 @@ include_once("includes/classes/class.DB.php");
                         <td><?php echo $payment['Amount']; ?></td>
                         <td><?php echo $payment['payment_method']; ?></td>
                         <td>
-                            <button class="btn btn-info btn-sm" onclick="printReceipt('<?php echo $payment['payment_id']; ?>')">Receipt</button>
+                        <form action="receipt.php" method="post" target="_blank">
+                            <input type="hidden" name="payment_id" value="<?php echo $payment['payment_id']; ?>">
+                            <input type="hidden" name="business_name" value="<?php echo $payment['business_name']; ?>">
+                            <input type="hidden" name="business_type" value="<?php echo $payment['business_type']; ?>">
+                            <input type="hidden" name="period" value="<?php echo $payment['period']; ?>">
+                            <input type="hidden" name="date" value="<?php echo $payment['date']; ?>">
+                            <input type="hidden" name="amount" value="<?php echo $payment['Amount']; ?>">
+                            <input type="hidden" name="payment_method" value="<?php echo $payment['payment_method']; ?>">
+                            <button type="submit" class="btn btn-info btn-sm">View Receipt</button>
+                        </form>
+
                         </td>
                     </tr>
                 <?php } ?>
@@ -65,31 +75,6 @@ include_once("includes/classes/class.DB.php");
         </table>
     </div>
 </div>
-
-<script>
-    function printReceipt(paymentId) {
-        // AJAX request to fetch transaction details
-        $.ajax({
-            url: 'fetch_transaction_details.php', // Replace with actual file to fetch details
-            method: 'POST',
-            data: {payment_id: paymentId},
-            success: function(response) {
-                // Create a hidden form and submit it to download as Word document
-                var form = document.createElement('form');
-                form.method = 'post';
-                form.action = 'receipt.php'; // Replace with actual file to generate Word document
-                var input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'transaction_details';
-                input.value = response; // Transaction details received from AJAX response
-                form.appendChild(input);
-                document.body.appendChild(form);
-                form.submit();
-                document.body.removeChild(form);
-            }
-        });
-    }
-</script>
 
 <?php include_once("foot.php"); ?>
 <?php include("ffoot.php"); ?>

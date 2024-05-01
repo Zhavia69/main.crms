@@ -1,14 +1,13 @@
 <?php
 if(isset($_POST['submit'])){
 
-
   date_default_timezone_set('Africa/Nairobi');
 
   # access token
   $consumerKey = 'h4Vro1TaA4RPohAAKBu9ngmTA6cqwzKuRaM54U5jU4Rty9BX'; //Fill with your app Consumer Key
   $consumerSecret = 'wKAuXkeXYW73LDujH0dKG5ENWbrrAEteArjeRFFhYpv5v2GSpUStBwAmPVVubjIH'; // Fill with your app Secret
 
-  # define the variales
+  # define the variables
   # provide the following details, this part is found on your test credentials on the developer account
   $BusinessShortCode = '174379';
   $Passkey = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';  
@@ -23,7 +22,7 @@ if(isset($_POST['submit'])){
     for developer/test accounts, this money will be reversed automatically by midnight.
   */
   
-   $PartyA = $_POST['phone']; // This is your phone number, 
+  $PartyA = $_POST['phone']; // This is your phone number, 
   $AccountReference = '2255';
   $TransactionDesc = 'Test Payment';
   $Amount = $_POST['amount'];
@@ -37,7 +36,7 @@ if(isset($_POST['submit'])){
   # header for access token
   $headers = ['Content-Type:application/json; charset=utf8'];
 
-    # M-PESA endpoint urls
+  # M-PESA endpoint urls
   $access_token_url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
   $initiate_url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
 
@@ -83,8 +82,16 @@ if(isset($_POST['submit'])){
   curl_setopt($curl, CURLOPT_POST, true);
   curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
   $curl_response = curl_exec($curl);
-  print_r($curl_response);
+  
+  // Check if the payment was successful before redirecting
+  $response_array = json_decode($curl_response, true);
+  if(isset($response_array['ResponseCode']) && $response_array['ResponseCode'] == '0') {
+    // Payment was successful
+    echo "Payment processing is on going. Kindly enter your Mpesa pin to complete the transaction.";
+  } else {
+    // Payment failed, display an error message or handle as needed
+    echo "Payment failed. Please try again.";
+  }
 
-  echo $curl_response;
 };
 ?>

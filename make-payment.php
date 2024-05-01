@@ -1,4 +1,5 @@
 <?php include_once("head.php"); ?>
+
 <div class="row">
     <div class="col-md-12">
         <h2>Revenue</h2>
@@ -59,16 +60,26 @@
             <div class="row form-group">
                 <div class="col-12 col-sm-4">Business Name</div>
                 <div class="col-12 col-sm-9">
-                    <input type="text" name="business_name" value="<?php echo $_SESSION['user_details']['business_name']; ?>" class="form-control" required readonly>
+                    <input type="text" name="business_name" value="<?php echo $_SESSION['user_details']['business_name']; ?>" class="form-control" required >
                 </div>
             </div>
 
             <div class="row form-group">
-                <div class="col-12 col-sm-4">Business Type</div>
+                <div class="col-12 col-sm-4">Category</div>
                 <div class="col-12 col-sm-9">
-                    <input type="text" name="business_type" value="<?php echo $_SESSION['user_details']['type_of_business']; ?>" class="form-control" required>
+                    <select name="business_type" class="form-control" required onchange="updateAmount(this.value)">
+                        <option value="Option 0">choose your category</option>
+                        <option value="Option 1">Event Centers</option>
+                        <option value="Option 2">Fines and Penalties</option>
+                        <option value="Option 3">Market Levy</option>
+                        <option value="Option 4">Security</option>
+                        <option value="Option 5">Waste Management</option>
+                        <option value="Option 6">fees and permits</option>
+                        <option value="Option 7">Express Way</option>
+                    </select>
                 </div>
-            </div>
+</div>
+
 
             <div class="row form-group">
                 <div class="col-12 col-sm-4">Date of Payment</div>
@@ -103,7 +114,7 @@
             <div class="row form-group">
                 <div class="col-12 col-sm-4">Amount Paid (KES)</div>
                 <div class="col-12 col-sm-9">
-                    <input type="number" name="Amount" class="form-control" required>
+                    <input type="number" name="Amount" id="amount" class="form-control" required>
                 </div>
             </div>
 
@@ -125,5 +136,36 @@
         </form>
     </div>
 </div>
+<script>
+    function updateAmount(businessType) {
+        var amountField = document.getElementById('amount');
+        switch (businessType) {
+            case 'Option 1':
+                amountField.value = '10000'; // Set the amount based on the business type
+                break;
+            case 'Option 2':
+                amountField.value = '5000';
+                break;
+            case 'Option 3':
+                amountField.value = '3000';
+                break;
+            case 'Option 4':
+                amountField.value = '2000';
+                break;
+            case 'Option 5':
+                amountField.value = '5000';
+                break;
+            case 'Option 6':
+                amountField.value = '12000';
+                break;
+            case 'Option 7':
+                amountField.value = '6000';
+                break;
+            default:
+                amountField.value = ''; // Set default value or leave it blank
+                break;
+        }
+    }
+</script>
 
 <?php include_once("ffoot.php"); ?>
