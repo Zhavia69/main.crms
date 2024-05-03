@@ -20,11 +20,12 @@
             $confirmationMessage = "Do you wish to proceed with this payment?";
             // Display JavaScript confirmation dialog
             echo "<script>if(confirm('$confirmationMessage')) {
-                      window.location.href='" . ($payment_method === 'Mpesa' ? 'mpesa-page.php' : 'credit-card-page.php') . "';
+                      window.location.href='" . ($payment_method === 'Mpesa' ? 'mpesa-page.php' : 'stripe.php') . "';
                   } else {
                       window.location.href='home.php';
                   }</script>";
-            
+        
+                             
             // Execute the API here after payment creation
             $apiURL = "";
             $apiKey = "abc1232";
@@ -115,6 +116,7 @@
                 <div class="col-12 col-sm-4">Amount Paid (KES)</div>
                 <div class="col-12 col-sm-9">
                     <input type="number" name="Amount" id="amount" class="form-control" required>
+                    
                 </div>
             </div>
 
@@ -161,9 +163,7 @@
             case 'Option 7':
                 amountField.value = '6000';
                 break;
-            default:
-                amountField.value = ''; // Set default value or leave it blank
-                break;
+           
         }
     }
 </script>

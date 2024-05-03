@@ -88,9 +88,19 @@ if(isset($_POST['submit'])){
   if(isset($response_array['ResponseCode']) && $response_array['ResponseCode'] == '0') {
     // Payment was successful
     echo "Payment processing is on going. Kindly enter your Mpesa pin to complete the transaction.";
+    echo "<script>
+            setTimeout(function(){
+                window.location.href = 'home.php';
+            }, 5000); // 5000 milliseconds = 5 seconds
+          </script>";
   } else {
     // Payment failed, display an error message or handle as needed
     echo "Payment failed. Please try again.";
+    echo "<script>
+            setTimeout(function(){
+                window.location.href = 'home.php';
+            }, 5000); // 5000 milliseconds = 5 seconds
+          </script>";
   }
 
 };

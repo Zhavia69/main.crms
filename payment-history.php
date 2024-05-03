@@ -1,9 +1,6 @@
-<?php
-include_once("head.php");
-$error_message = "";
+<?php include_once("head.php");
 
-// Include your database connection file
-include_once("includes/classes/class.DB.php");
+
 
 ?>
 <div class="row">
@@ -26,7 +23,7 @@ include_once("includes/classes/class.DB.php");
                     <th>Date</th>
                     <th>Amount (KES)</th>
                     <th>Payment Method</th>
-                    <th>Action</th> <!-- New column for the button -->
+                    <th>Action</th> 
                </tr>
             </thead>
             <tbody>
@@ -77,4 +74,4 @@ include_once("includes/classes/class.DB.php");
 </div>
 
 <?php include_once("foot.php"); ?>
-<?php include("ffoot.php"); ?>
+
