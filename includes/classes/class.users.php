@@ -122,13 +122,13 @@ $stmt->execute();
  return $data;
 }
  
- static function login_users($username,$password){ 
-$q='select * from users where username=:username and password=:password';
+ static function login_users($username){ 
+$q='select * from users where username=:username';// and password=:password';
  $data=array();
 
  $stmt=DB::connect()->prepare($q); 
 $stmt->bindParam(':username',$username); 
-$stmt->bindParam(':password',$password); 
+// $stmt->bindParam(':password',$password); 
 
  $stmt->execute(); 
  $data['rows']=$stmt->fetch(PDO::FETCH_ASSOC); 
@@ -140,3 +140,5 @@ $stmt->bindParam(':password',$password);
  } 
  
   ?>
+
+  

@@ -1,44 +1,64 @@
-<?php session_start();
- include_once('autoload.php');
- $error_message=''; if(isset($_SESSION['user_details']) && isset($_SESSION['user_id'])){
 
-                        $confirm=users::login_users($_SESSION['user_details']['username'],$_SESSION['user_details']['password']);
+<?php 
+session_start();
+include_once('autoload.php');
 
-                        $crows=$confirm['row_count'];
+$error_message=''; 
 
-                        if($crows >0){
- echo '<script type="text/javascript">window.location.href="home.php";</script>'; 
-}else{
- session_destroy();
- echo '<script type="text/javascript">window.location.href="login.php";</script>';
-                        }
-                    
-}else{
+function getDashboardValues($email){
+    $servername = "localhost"; // Change this to your database server name
+    $username = "root"; // Change this to your database username
+    $password = ""; // Change this to your database password
+    $dbname = "bpayment"; // Change this to your database name
+    
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    $sql = "SELECT count(id) AS payment_history_count FROM payment_history where email = '$email';";
 
-                    if(isset($_POST['login'])){
-
-                    extract($_POST);
-
-                    $confirm_login=users::login_users($username,$password);
-
-                    $row_count=$confirm_login['row_count'];
-
-                    $rows=$confirm_login['rows'];
-
-                    if($row_count >0){
-
-                    $_SESSION['user_details']=$rows;
-
-                    $_SESSION['user_id']=$rows['user_id'];
-
-                    echo '<script type="text/javascript">window.location.href="home.php";</script>';
-                    }else{ $error_message="<div class='alert alert-danger'>Login Failed! Incorrect username/password.</div>"; }
-
-                    } 
-                     
+    $result = $conn->query($sql);
+    $_SESSION['payment_history_count']=0;
+    if ($result->num_rows > 0) {
+        $payment_history_count = ($result->fetch_assoc()['payment_history_count']);
+        $_SESSION['payment_history_count']=$payment_history_count;
+    }
 }
- ?>
-<?php include_once("hhead.php"); ?>
+
+if(isset($_SESSION['user_details']) && isset($_SESSION['user_id'])){
+    $confirm=users::login_users($_SESSION['user_details']['username'],$_SESSION['user_details']['password']);
+    $crows=$confirm['row_count'];
+    if($crows >0){
+        echo '<script type="text/javascript">window.location.href="home.php";</script>'; 
+    }else{
+        session_destroy();
+        echo '<script type="text/javascript">window.location.href="login.php";</script>';
+    }
+} else {
+    if(isset($_POST['login'])){
+        extract($_POST);
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $confirm_login=users::login_users($username);
+        // print_r('Hashed Password : ' . strval($hashed_password).'<br>');
+        // print_r('Password : ' . strval($password).'<br>');
+        $hashed_password = $confirm_login['rows']['password'];
+
+        $user_found = password_verify($password, $hashed_password);
+        // print_r($user_found);
+        // die();
+        // $row_count=$confirm_login['row_count'];
+        $rows=$confirm_login['rows'];
+        if($user_found){
+
+            getDashboardValues($username);
+            $_SESSION['user_details']=$rows;
+            $_SESSION['user_id']=$rows['user_id'];
+            echo '<script type="text/javascript">window.location.href="home.php";</script>';
+        } else { 
+            $error_message="<div class='alert alert-danger'>Login Failed! Incorrect username/password.</div>"; 
+        }
+    } 
+}
+include_once("hhead.php"); 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,11 +100,15 @@
                     <label for="password">Password</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block" name="login">Login</button>
+                <button type="submit" class="btn btn-primary btn-block mb-3" name="login">Login</button>
+
             </form>
+
+            <!-- Forgot Password link -->
+            <a href="forgot_password.php">Forgot Password?</a>
         </div>
     </div>
 </body>
 </html>
 
-     <?php include_once("ffoot.php"); ?>
+

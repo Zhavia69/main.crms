@@ -36,7 +36,6 @@ if (isset($_POST['update'])) {
         $_SESSION['user_details']['full_names'] = $full_names;
         $_SESSION['user_details']['tel'] = $tel;
         $_SESSION['user_details']['business_name'] = $business_name;
-        $_SESSION['user_details']['type_of_business'] = $type_of_business;
         $_SESSION['user_details']['addresses'] = $addresses;
         $_SESSION['user_details']['ID_Number'] = $ID_Number; // Update ID number in session
 
@@ -166,11 +165,6 @@ if (isset($_POST['update'])) {
         </div>
 
         <div class="form-group">
-            <label for="type_of_business">Business Type</label>
-            <input type="text" class="form-control" id="type_of_business" name="type_of_business" value="<?php echo $type_of_business; ?>" required>
-        </div>
-
-        <div class="form-group">
             <label for="addresses">Address</label>
             <input type="text" class="form-control" id="addresses" name="addresses" value="<?php echo $addresses; ?>" required>
         </div>
@@ -178,6 +172,6 @@ if (isset($_POST['update'])) {
         <button type="submit" name="update" class="btn btn-primary">Update Profile</button>
     </form>
 </div>
-<?php include_once('ffoot.php'); ?>
+
 </body>
 </html>

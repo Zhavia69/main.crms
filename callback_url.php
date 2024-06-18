@@ -1,5 +1,7 @@
 <?php
 
+require_once('path/to/Daraja.php');
+
 // Retrieve the callback data sent by Safaricom
 $callbackData = file_get_contents('php://input');
 

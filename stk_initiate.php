@@ -41,7 +41,7 @@ if(isset($_POST['submit'])){
   $initiate_url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
 
   # callback url
-  $CallBackURL = 'https://morning-basin-87523.herokuapp.com/callback_url.php';  
+  $CallBackURL = 'https://mydomain.com/path/callback.php';  
 
   $curl = curl_init($access_token_url);
   curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
@@ -59,49 +59,51 @@ if(isset($_POST['submit'])){
 
   # initiating the transaction
   $curl = curl_init();
-  curl_setopt($curl, CURLOPT_URL, $initiate_url);
-  curl_setopt($curl, CURLOPT_HTTPHEADER, $stkheader); //setting custom header
+  curl_setopt($curl, CURLOPT_URL, $initiate_url
+);
+curl_setopt($curl, CURLOPT_HTTPHEADER, $stkheader); //setting custom header
 
-  $curl_post_data = array(
-    //Fill in the request parameters with valid values
-    'BusinessShortCode' => $BusinessShortCode,
-    'Password' => $Password,
-    'Timestamp' => $Timestamp,
-    'TransactionType' => 'CustomerPayBillOnline',
-    'Amount' => $Amount,
-    'PartyA' => $PartyA,
-    'PartyB' => $BusinessShortCode,
-    'PhoneNumber' => $PartyA,
-    'CallBackURL' => $CallBackURL,
-    'AccountReference' => $AccountReference,
-    'TransactionDesc' => $TransactionDesc
-  );
+$curl_post_data = array(
+  //Fill in the request parameters with valid values
+  'BusinessShortCode' => $BusinessShortCode,
+  'Password' => $Password,
+  'Timestamp' => $Timestamp,
+  'TransactionType' => 'CustomerPayBillOnline',
+  'Amount' => $Amount,
+  'PartyA' => $PartyA,
+  'PartyB' => $BusinessShortCode,
+  'PhoneNumber' => $PartyA,
+  'CallBackURL' => $CallBackURL,
+  'AccountReference' => $AccountReference,
+  'TransactionDesc' => $TransactionDesc
+);
 
-  $data_string = json_encode($curl_post_data);
-  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl, CURLOPT_POST, true);
-  curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
-  $curl_response = curl_exec($curl);
-  
-  // Check if the payment was successful before redirecting
-  $response_array = json_decode($curl_response, true);
-  if(isset($response_array['ResponseCode']) && $response_array['ResponseCode'] == '0') {
-    // Payment was successful
-    echo "Payment processing is on going. Kindly enter your Mpesa pin to complete the transaction.";
-    echo "<script>
-            setTimeout(function(){
-                window.location.href = 'home.php';
-            }, 5000); // 5000 milliseconds = 5 seconds
-          </script>";
-  } else {
-    // Payment failed, display an error message or handle as needed
-    echo "Payment failed. Please try again.";
-    echo "<script>
-            setTimeout(function(){
-                window.location.href = 'home.php';
-            }, 5000); // 5000 milliseconds = 5 seconds
-          </script>";
-  }
+$data_string = json_encode($curl_post_data);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($curl, CURLOPT_POST, true);
+curl_setopt($curl, CURLOPT_POSTFIELDS, $data_string);
+$curl_response = curl_exec($curl);
+
+// Check if the payment was successful before redirecting
+$response_array = json_decode($curl_response, true);
+if(isset($response_array['ResponseCode']) && $response_array['ResponseCode'] == '0') {
+  // Payment was successful
+  echo "Payment processing is ongoing. Kindly enter your M-Pesa PIN to complete the transaction.";
+  echo "<script>
+        setTimeout(function(){
+            window.location.href = 'home.php?payment_success=" . ($response_array['ResponseCode'] == '0' ? 'true' : 'false') . "';
+        }, 5000); // 5000 milliseconds = 5 seconds
+      </script>";
+} else {
+  // Payment failed, display an error message or handle as needed
+  echo "Payment failed. Please try again.";
+  echo "<script>
+        setTimeout(function(){
+            window.location.href = 'home.php?payment_success=" . ($response_array['ResponseCode'] == '0' ? 'true' : 'false') . "';
+        }, 5000); // 5000 milliseconds = 5 seconds
+      </script>";
+
+}
 
 };
 ?>

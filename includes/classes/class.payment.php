@@ -11,14 +11,13 @@
 }
 
 public function create_payment($business_name,$date,$period,$status,$Amount,$payment_method,$business_type,$show_error='NO'){
-$q='insert into payment(business_name,date,period,status,Amount,payment_method,business_type) values(:business_name,:date,:period,:status,:Amount,:payment_method,:business_type)';
+$q='insert into payment_history(business_name,date,period,Amount,payment_method,business_type) values(:business_name,:date,:period,:Amount,:payment_method,:business_type)';
 
 $con_init=DB::connect();
 $stmt=$con_init->prepare($q);
 $stmt->bindParam(':business_name',$business_name);
 $stmt->bindParam(':date',$date);
 $stmt->bindParam(':period',$period);
-$stmt->bindParam(':status',$status);
 $stmt->bindParam(':Amount',$Amount);
 $stmt->bindParam(':payment_method',$payment_method); //
 $stmt->bindParam(':business_type',$business_type);
@@ -33,7 +32,7 @@ if($show_error=='YES'){
  
  
 static function read_payment($start='0',$limit='1000'){
-$q='select * from payment limit'.' '.$start.','.$limit;
+$q='select * from payment_history limit'.' '.$start.','.$limit;
 $data=array();
 $stmt=DB::connect()->prepare($q);
 $stmt->execute();
@@ -53,7 +52,7 @@ static function payment_constants(){$const=array('payment_id','business_name','d
 }
  
  static function setStatus($payment_id,$status="Approved"){
-  $q="update payment set status=:status where payment_id=:payment_id";
+  $q="update payment_history set status=:status where payment_id=:payment_id";
   $stmt=DB::connect()->prepare($q);
   $stmt->bindParam(':status',$status);
   $stmt->bindParam(':payment_id',$payment_id);
@@ -61,7 +60,7 @@ $stmt->execute();
  }
 public function update_payment($business_name,$date,$period,$status){
  
-$q='update payment set business_name=:business_name,date=:date,period=:period,status=:status where payment_id=:4361_';
+$q='update payment_history set business_name=:business_name,date=:date,period=:period,status=:status where payment_id=:4361_';
 
 $stmt=DB::connect()->prepare($q);
 $stmt->bindParam(':business_name',$business_name);
@@ -75,7 +74,7 @@ $stmt->execute();
 
 
 public function delete_payment(){
-$q='delete from payment where payment_id=:4361_';
+$q='delete from payment_history where id=:4361_';
 $stmt=DB::connect()->prepare($q);
 $stmt->bindParam(':4361_',$this->primary_key);
 $stmt->execute();
@@ -84,7 +83,7 @@ $stmt->execute();
 
 
 static function search_payment($col,$value,$start='0',$limit='1000'){
-$q='select * from payment where '.$col.' like :col limit'.' '.$start.','.$limit;
+$q='select * from payment_history where '.$col.' like :col limit'.' '.$start.','.$limit;
  $value='%'.$value.'%'; 
  $data=array();
 $stmt=DB::connect()->prepare($q);
@@ -99,7 +98,7 @@ $stmt->execute();
  
  
 static function search_marched_payment($col,$value,$start='0',$limit='1000'){
-$q='select * from payment where '.$col.'=:col limit'.' '.$start.','.$limit; 
+$q='select * from payment_history where '.$col.'=:col limit'.' '.$start.','.$limit; 
  $data=array();
 $stmt=DB::connect()->prepare($q);
 $stmt->bindParam(':col',$value);
@@ -113,7 +112,7 @@ $stmt->execute();
  
  
 static function get_payment($id){
-$q='select * from payment where payment_id=:4361_';
+$q='select * from payment_history where payment_id=:4361_';
 $stmt=DB::connect()->prepare($q);
 $stmt->bindParam(':4361_',$id);
 $stmt->execute();

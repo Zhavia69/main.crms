@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>The County Revenue Management System</title>
+  <title>County Revenue Management System</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -39,7 +39,7 @@
 
 <nav class="navbar navbar-expand-sm bg-light navbar-light">
     <div class="container">
-      <a class="navbar-brand" href="index.php">The County Revenue Management System</a>
+      <a class="navbar-brand" href="index.php">County Revenue Management System</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>

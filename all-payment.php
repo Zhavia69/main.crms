@@ -1,4 +1,24 @@
-<?php include_once('head.php'); ?>
+<?php 
+include_once('head.php');
+
+// Establish a database connection
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "bpayment";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check the connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// SQL query to fetch client details from the payment_history table
+$sql = "SELECT * FROM payment_history";
+
+$result = $conn->query($sql);
+?>
 
 <div class='row' id='row' style='margin-top:24px;padding:4px;'>
     <div class='col-sm-12 col-md-12 col-xs-12 col-lg-12'>
@@ -70,43 +90,69 @@
                     echo 'search results for: ' . $_GET['type'] . ' / ' . $_GET['query'];
                 }
                 ?></b></center><p><hr><p>
-            <div class='table-responsive'>
-                <table style='width:100%;' border='1' cellpadding='2' class='table table-striped table-hover table-bordered table-condensed' id='table'>
-                    <thead>
-                        <tr>
-                            <th>S.no</th>
-                            <th>Business name</th>
-                            <th>Business Type</th>
-                            <th>Period</th>
-                            <th>Date</th>
-                            <th>Amount (KES)</th>
-                            <th>Payment Method</th>
-                            <th class='Edit'><i class='fa fa-edit'></i> Update</th>
-                            <th class='Delete'><i class='fa fa-trash'></i> Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        for ($i = 0; $i < count($alldata); $i++) {
-                            $raw = $alldata[$i];
-                            ?>
-                            <tr>
-                                <td><?php echo $i + 1; ?></td>
-                                <td><?php echo $raw['business_name']; ?></td>
-                                <td><?php echo $raw['business_type']; ?></td>
-                                <td><?php echo $raw['period']; ?></td>
-                                <td><?php echo $raw['date']; ?></td>
-                                <td><?php echo $raw['Amount']; ?></td>
-                                <td><?php echo $raw['payment_method']; ?></td>
-                                <td class='Edit'><a href='add-payment.php?id=<?php echo $raw['payment_id']; ?>' class='btn btn-success'><i class='fa fa-edit'></i> EDIT</a></td>
-                                <td class='Delete'><a href='all-payment.php?id=<?php echo $raw['payment_id']; ?>' class='btn btn-danger'><i class='fa fa-trash'></i> TRASH</a></td>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            </div>
+           <div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>S.no</th>
+                    <th>Business name</th>
+                    <th>Business Type</th>
+                    <th>Period</th>
+                    <th>Date</th>
+                    <th>Amount (KES)</th>
+                    <th>Payment Method</th>
+                    <th>Action</th> 
+                    <th class='Delete'><i class='fa fa-trash'></i> Delete</th>
+
+               </tr>
+            </thead>
+            <tbody>
+               <?php 
+               // Check if there are any payment records
+               if ($result->num_rows > 0) {
+                   // Output data of each row
+                   while($payment = $result->fetch_assoc()) {
+               ?>
+                    <tr>
+                    <td>
+                        <?php echo str_pad($payment['id'], 5, '0', STR_PAD_LEFT); ?></td>
+                        <td><?php echo $payment['business_name']; ?></td>
+                        <td><?php echo $payment['business_type']; ?></td>
+                        <td><?php echo $payment['period']; ?></td>
+                        <td><?php echo $payment['date']; ?></td>
+                        <td><?php echo $payment['amount']; ?></td>
+                        <td><?php echo $payment['payment_method']; ?></td>
+                        
+                        <td>
+                            <form action="receipt.php" method="post" target="_blank">
+                                <input type="hidden" name="payment_id" value="<?php echo $payment['id']; ?>">
+                                <input type="hidden" name="business_name" value="<?php echo $payment['business_name']; ?>">
+                                <input type="hidden" name="business_type" value="<?php echo $payment['business_type']; ?>">
+                                <input type="hidden" name="period" value="<?php echo $payment['period']; ?>">
+                                <input type="hidden" name="date" value="<?php echo $payment['date']; ?>">
+                                <input type="hidden" name="amount" value="<?php echo $payment['amount']; ?>">
+                                <input type="hidden" name="payment_method" value="<?php echo $payment['payment_method']; ?>">
+                                <button type="submit" class="btn btn-info btn-sm">View Receipt</button>
+                            </form>
+                        </td>
+                        <td class='Delete'>
+                            <a href='all-payment.php?id=<?php echo $payment['id']; ?>' class='btn btn-danger'>
+                            <i class='fa fa-trash'></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                <?php 
+                    }
+                } else {
+                    echo "<tr><td colspan='8'>No payments found</td></tr>";
+                }
+                // Close the database connection
+                $conn->close();
+                ?>
+            </tbody>
+        </table>
     </div>
 </div>
 
-<?php include_once('foot.php'); ?>
-<?php include("ffoot.php"); ?>
+<?php include_once("foot.php"); ?>
